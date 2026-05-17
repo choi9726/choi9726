@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 기본 차단
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 사용자 정보 및 로그 보안 규칙
+    match /users/{userId} {
+      allow get: if isSignedIn() && isOwner(userId);
+      allow create, update: if isSignedIn() && isOwner(userId) && isValidUser(request.resource.data);
+
+      match /stress_logs/{logId} {
+        allow list, get: if isSignedIn() && isOwner(userId);
+        allow create: if isSignedIn() && isOwner(userId) && isValidStressLog(request.resource.data);
+      }
+    }
+
+    // 헬퍼 함수
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    function isValidUser(data) {
+      return data.uid == request.auth.uid;
+    }
+    function isValidStressLog(data) {
+      return data.userId == request.auth.uid 
+             && data.category in ['민원', '업무', '수업', '학생지도', '기타']
+             && data.timestamp == request.time;
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "entities": {
+    "StressLog": {
+      "title": "Stress Log",
+      "description": "교사의 스트레스 분석 데이터",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "사용자 고유 ID" },
+        "category": { 
+          "type": "string", 
+          "enum": ["민원", "업무", "수업", "학생지도", "기타"],
+          "description": "스트레스 분류" 
+        },
+        "intensity": { "type": "integer", "description": "스트레스 강도 (1-5)" },
+        "summary": { "type": "string", "description": "고민 내용 요약" },
+        "solution": { "type": "string", "description": "AI가 제안하는 구체적인 해결 방안" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "상담 시간" }
+      },
+      "required": ["userId", "category", "timestamp"]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "사용자 맞춤 정보를 위한 프로필",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "lastAnalysis": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "사용자 기본 정보"
+    },
+    "/users/{userId}/stress_logs/{logId}": {
+      "schema": "StressLog",
+      "description": "선생님의 개별 스트레스 데이터"
+    }
+  }
+}

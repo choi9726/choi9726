@@ -1,0 +1,6 @@
+{
+  "name": "교사의 정원",
+  "description": "지친 선생님들을 위한 따뜻한 위로와 상담 공간",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
